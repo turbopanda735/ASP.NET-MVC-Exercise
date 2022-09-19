@@ -21,9 +21,10 @@ namespace ASPNET_intro.Controllers
         }
 
         // GET: ProductController/Details/5
-        public ActionResult Details(int id)
+        public ActionResult ViewProduct(int id)
         {
-            return View();
+            var product = repo.GetProduct(id);
+            return View(product);
         }
 
         // GET: ProductController/Create
@@ -48,9 +49,21 @@ namespace ASPNET_intro.Controllers
         }
 
         // GET: ProductController/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult UpdateProduct(int id)
         {
-            return View();
+            Product prod = repo.GetProduct(id);
+            if (prod == null)
+            {
+                return View("ProductNotFound");
+            }
+            return View(prod);
+        }
+
+        public ActionResult UpdateProductToDatabase(Product product)
+        {
+            repo.UpdateProduct(product);
+
+            return RedirectToAction("ViewProduct", new { id = product.ProductID });
         }
 
         // POST: ProductController/Edit/5
@@ -87,6 +100,21 @@ namespace ASPNET_intro.Controllers
             {
                 return View();
             }
+        }
+        public ActionResult InsertProduct()
+        {
+            var prod = repo.AssignCategory();
+            return View(prod);
+        }
+        public ActionResult InsertProductToDatabase(Product productToInsert)
+        {
+            repo.InsertProduct(productToInsert);
+            return RedirectToAction("Index");
+        }
+        public ActionResult DeleteProduct(Product product)
+        {
+            repo.DeleteProduct(product);
+            return RedirectToAction("Index");
         }
     }
 }
